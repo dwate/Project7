@@ -1,0 +1,35 @@
+.navItem {
+    color: white;
+    font-size: .9em;
+    margin-right: 1.3rem;
+    text-decoration: none;
+    
+
+}
+
+.title {
+    color: black;
+    font-size: 3rem;
+    text-decoration: none;
+
+}
+
+.navList {
+    display: flex;
+    list-style-type: none;
+    justify-content: center;
+    margin: 2px;
+    padding: 5px;
+    background-color: rgb(202, 93, 53);
+
+}
+
+.navItem:hover {
+    color:white;
+    text-decoration-line:underline;
+}
+
+.activeNavItem {
+    color:black;
+    font-weight: bolder;
+}
