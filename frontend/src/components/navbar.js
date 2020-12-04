@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import { Link }  from 'react-router-dom';
 import '../styles/navstyles.css'
 
+
+
+
+
 class navbar extends Component {
+   
+
     render() {
         return (
             <div>
@@ -11,7 +17,9 @@ class navbar extends Component {
             <span><Link className="navItem" to="/">Home</Link></span>
             <span><Link className="navItem" to="/signup">Signup</Link></span>
            <span><Link className="navItem" to="/login">Login</Link></span>
-           
+           <span><Link className="navItem" to="/create-article">Post</Link></span>
+           <span><Link className="navItem" to="/profile">Profile</Link></span>
+           <span><button id="logoff" >Logoff</button></span>
             </div>
             </nav>
             

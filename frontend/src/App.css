@@ -11,3 +11,20 @@ body{
   align-content: flex-end;
   max-width: 200px;
 }
+
+#artItem{
+display:flex;
+flex-direction: column;
+background-color: rgb(248, 207, 192);
+justify-items: center;
+align-items: center;
+margin: 20px 8px;
+padding-left: 20px;
+max-height: 150px;
+}
+
+#artItem:hover{
+  background-color: coral;
+  transform: scale(1.25);
+}
+
