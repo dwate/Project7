@@ -1,4 +1,6 @@
 const msSql = require('mssql');
+var moment = require('moment');
+const fs = require('fs');
 
 const db = new msSql.ConnectionPool({
     
@@ -16,66 +18,119 @@ db.connect((err) => {
 }); 
 
 exports.getArticles =  (req, res) => {
-    db.query("SELECT * FROM [Articles];").then(
+ // db.query("SELECT  FROM [Articles] INNER JOIN ;")
+    db.query("SELECT * FROM [Articles] ORDER BY ArticleID DESC;").then(
       (result) => {
-        res.json(result);
+        res.status(200).json(result);
         //console.log(result);
       }
     ).catch(
       (error) => {
-        res.status(500).send({ message: 'Something went wrong'});
+        res.status(400).json({error: error, message: 'Something went wrong'});
       }
     );  return msSql.close()
     };  
-
+//
 exports.createArticles =  (req, res) => {
-  const Title = req.body.title;
-  const Content = req.body.Content;
-
-db.query("INSERT INTO [Articles] (ProfileID, Title, Content) VALUES ('1' ,'" + Title + "', '" + Content +"')",
+  if (req.file){
+    const url = req.protocol + '://' + req.get('host');
+    var contentImg =  url + '/images/' + req.file.filename;
+    req.body.article = JSON.parse(req.body.article);
+  } else {
+    req.body.article = JSON.parse(req.body.article);
+    var contentImg = req.body.article.contentImg
+  }
+  const Title = req.body.article.title;
+  const Content = req.body.article.content;
+  const ArticleDate = moment().format('YYYY-MM-DD hh:mm:ss');
+  const profileID = req.body.article.profileID;
+  const author = req.body.article.author;
+db.query("INSERT INTO [Articles] (ProfileID, Title, Content, ArticleDate, ContentImg, Author, Likes ) VALUES ('"+profileID+"' ,'" + Title + "', '" + Content +"','" +ArticleDate+ "', '" +contentImg+ "', '"+author+"', '0')",
       (err, result) => {
         console.log(err);
-        res.send({ message: "Post Created Successfully!!!" });
+        res.status(201).send({ message: "Post Created Successfully!!!" });
       }
     ); return msSql.close()
   }; 
 
-  exports.getArticleById =  (req, res) => {
-    const Artid = req.params.id;
-    db.query("SELECT * FROM [Articles] WHERE (ArticleID) = "+Artid+";").then(
+    exports.getArticleById =  (req, res) => {
+     const Artid = req.params.id;
+      db.query("SELECT * FROM [Articles] WHERE (ArticleID) = "+Artid+";").then(
       (result) => {
-        res.send(result);
+        res.status(200).send(result);
       }
-    ).catch(
+      ).catch(
       (error) => {
         console.log(error);
-        res.status(500).send({ message: 'Something went wrong'});
-      }
-    );  return msSql.close()
-    };    
+        res.status(404).json({error:error, message: 'Something went wrong'});
+          }
+          );  return msSql.close()
+      };    
 
     exports.modifyArticle =  (req, res) => {
-      db.query("UPDATE [Articles] SET Title ='" +req.body.title+ "', Content ='" +req.body.Content+ "' WHERE ArticleID = " +req.param.id+ ";").then(
+         if (req.file){
+            const url = req.protocol + '://' + req.get('host');
+            var contentImg =  url + '/images/' + req.file.filename;
+            console.log(req.body.article);
+            req.body.article = JSON.parse(req.body.article);
+         } else {
+          req.body.article = JSON.parse(req.body.article);
+          db.query("UPDATE [Articles] SET Title ='" +req.body.article.title+ "', Content ='" +req.body.article.content+ "' WHERE (ArticleID) = " +req.params.id+ ";").then(
+             () => {
+               res.status(201).json({message: 'Article has been updated'});
+               }
+              ).catch(
+               (error) => {
+                  res.status(400).json({error:error, message: 'Something went wrong'});
+               }
+              );  return msSql.close()
+         }
+         db.query("UPDATE [Articles] SET Title ='" +req.body.article.title+ "', Content ='" +req.body.article.content+ "', ContentImg ='" +contentImg+"' WHERE (ArticleID) = " +req.params.id+ ";").then(
+          () => {
+           res.status(201).json({message: 'Article has been updated'});
+          }
+          ).catch(
+           (error) => {
+           res.status(400).json({error:error, message: 'Something went wrong'});
+           }
+          );  return msSql.close()
+      
+    };
+
+
+    exports.deleteArticle =  (req, res, next) => {
+      db.query("SELECT ContentImg FROM [Articles] WHERE (ArticleID) = "+req.params.id+";").then(
         (result) => {
-          res.send(result);
-        }
-      ).catch(
-        (error) => {
-          res.status(500).send({ message: 'Something went wrong'});
-        }
-      );  return msSql.close()
+          
+          const filename = result.recordset[0].ContentImg.split('/images/')[1];
+          console.log(filename);
+          fs.unlink('images/' + filename, () => {
+            
+      
+             db.query("DELETE FROM [Articles] WHERE (ArticleID) = "+req.params.id+";").then(
+               () => {
+                res.status(200).json({message: 'Article deleted!'});
+                  }
+                 ).catch(
+                 (error) => {
+                   res.status(400).json({error:error, message: 'Unable to delete!!'});
+                  }
+               );  return msSql.close()
+            });
+          }
+      );
       };    
 
-
-
-    exports.deleteArticle =  (req, res) => {
-      db.query("DELETE * FROM [Articles] WHERE ArticleID = " +req.param.id+ ";").then(
-        (result) => {
-          res.send({message: 'Article deleted!'});
-        }
-      ).catch(
-        (error) => {
-          res.status(500).send({ message: 'Something went wrong'});
-        }
-      );  return msSql.close()
-      };    
+      exports.getArticlesByUserId =  (req, res) => {
+        const Artid = req.params.id;
+         db.query("SELECT * FROM [Articles] WHERE (ProfileID) = "+Artid+" ORDER BY ArticleID DESC;").then(
+         (result) => {
+           res.status(200).send(result);
+         }
+         ).catch(
+         (error) => {
+           console.log(error);
+           res.status(404).json({error:error, message: 'Something went wrong'});
+             }
+             );  return msSql.close()
+         };    

@@ -1,10 +1,19 @@
 .navItem {
+ 
     color: white;
     font-size: .9em;
-    margin-right: 1.3rem;
+    margin-right: 1rem;
     text-decoration: none;
-    
+   
 
+}
+
+.navItemImg {
+    
+    margin-top: 4px;
+    margin-right: 20px;
+    justify-items: center;
+    align-items: center;
 }
 
 .title {
@@ -16,8 +25,10 @@
 
 .navList {
     display: flex;
+    flex-direction: row;
     list-style-type: none;
     justify-content: center;
+    align-content: center;
     margin: 2px;
     padding: 5px;
     background-color: rgb(202, 93, 53);

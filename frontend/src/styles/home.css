@@ -1,0 +1,48 @@
+.artItem{
+    display:flex;
+    flex-direction: column;
+    background-color: rgb(248, 207, 192);
+    border-radius: 10px;
+    justify-items: center;
+    align-items: center;
+    margin: 20px 8px;
+    padding-left: 20px;
+    max-height: 150px;
+    z-index: 4;
+
+    }
+
+    .homeCenter {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      
+      align-items: center;
+    }
+    
+    .artItem:hover{
+      display:flex;
+      border-color: coral;
+      background-color: rgb(248, 207, 192);
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 10px;
+      transform: scale(1.15);
+      z-index: 4;
+    } 
+
+#artTest{
+  display:flex;
+  flex-direction: column;
+  max-width: 500px;
+  margin-left: 20px;
+  align-content: center;
+ 
+}
+#null{
+    display: none;
+  }
+ 
+#undefined {
+    display:none;
+}  

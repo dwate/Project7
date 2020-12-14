@@ -2,28 +2,38 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 
+import AuthRoute from './components/AuthRoute';
+
+
 import home from './pages/home';
 import signup from './pages/signup';
 import login from './pages/login';
-import article from './pages/single-article';
 import articleAdd from './pages/create-article';
 import profile from './pages/profile';
-import Navbar from './components/navbar';
+import ModifyArticle from './pages/modify-article';
+import article from './pages/single-article';
+import MyProfile from './pages/user-profile';
+
 
 
 class App extends Component {
+ 
   render() {
     return (
-      <div className="App">
+      <div className="App hero-image">
         <Router>
-          <Navbar/>
+         
+       
           <Switch>
-            <Route exact path="/" component={home}/>
-            <Route exact path="/signup" component={signup}/>
             <Route exact path="/login" component={login}/>
-            <Route exact path="/article/:id" component={article}/>
-            <Route exact path="/profile" component={profile}/>
-            <Route exact path="/create-article" component={articleAdd}/>
+            <Route exact path="/signup" component={signup}/>
+            <AuthRoute exact path="/" component={home}  />
+            <AuthRoute exact path="/profile" component={profile} />
+            <AuthRoute exact path="/my-profile/" component={MyProfile} />
+            <AuthRoute exact path="/create-article" component={articleAdd} />
+            <AuthRoute exact path="/modify-article/:id" component={ModifyArticle} />
+            <AuthRoute exact path="/article/:id" component={article}/>
+            <Route path="*" component={()=> "404 PAGE NOT FOUND"}/>         
           </Switch>
         </Router>    
       </div>
